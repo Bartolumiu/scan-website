@@ -1,20 +1,36 @@
 <template>
-    <div v-if="error" class="error">{{ error.message }}</div>
+    <div v-if="error" class="error">{{ error }}</div>
     <div v-else-if="isLoading" class="loading">Loading...</div>
     <div v-else class="manga-details">
-        <h1>{{ manga.title }}</h1>
-        <img :src="manga.coverURL" alt="Manga Cover" class="manga-cover" />
-        <p>{{ manga.description }}</p>
+        <p>{{ data }}</p>
+        <h1>{{ data.attributes.title.en }}</h1>
+        <h2>{{ data.attributes.altTitles[0]['ja'] }}</h2>
+
+        <MangaCard />
     </div>
 </template>
 
 <script setup>
-import { useFetch, useRoute } from '#app';
+import { ref, onMounted } from 'vue';
+import { useRoute } from '#app';
+import axios from 'axios';
 
 const route = useRoute();
-const { data, error, isLoading } = await useFetch(`https://reader-api.tr25.es/manga/${route.params.id}`); // Fetch manga details from API
+const data = ref(null);
+const isLoading = ref(true);
+const error = ref(null);
 
-const manga = data.value || {}; // Initialize manga as empty object if data is not available
+onMounted(async () => {
+    try {
+        const res = await axios.get(`http://localhost:5001/api/manga/${route.params.id}`); // Fetch manga details from API
+        data.value = res.data.data;
+    } catch (e) {
+        error.value = e.message;
+    } finally {
+        isLoading.value = false;
+        console.log('Component mounted');
+    }
+}); 
 </script>
 
 <style scoped>
