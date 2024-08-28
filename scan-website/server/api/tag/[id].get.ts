@@ -1,4 +1,5 @@
-// server/api/manga/[id].get.ts
+// server/api/tag/[id].get.ts
+import { defineEventHandler } from 'h3';
 import Manga from '../../models/Manga';
 
 export default defineEventHandler(async (event) => {

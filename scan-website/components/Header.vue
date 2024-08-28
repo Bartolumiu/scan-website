@@ -1,7 +1,7 @@
 <template>
     <header class="header">
         <div class="logo">
-            <NuxtLink to="/">Scan Website</NuxtLink>
+            <NuxtLink to="/">o(≧▽≦)o</NuxtLink>
         </div>
         <nav class="nav">
             <NuxtLink to="/" class="nav-link">Home</NuxtLink>

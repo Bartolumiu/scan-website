@@ -3,11 +3,11 @@
         <div v-if="error" class="error">{{ error.message }}</div>
         <div v-else-if="isLoading" class="loading">Loading...</div>
         <div v-else class="manga-grid">
-            <div v-for="manga in mangaList" :key="manga.id" class="manga-item">
-                <NuxtLink :to="`/title/${manga.id}`">
+            <div v-for="manga in mangaList" :key="manga._id" class="manga-item">
+                <NuxtLink :to="`/title/${manga._id}`">
                     <img :src="manga.coverURL" alt="Manga Cover" class="manga-cover" />
                 </NuxtLink>
-                <h3 class="manga-title">{{ manga.title }}</h3>
+                <h3 class="manga-title">{{ manga.attributes.title }}</h3>
             </div>
         </div>
     </div>
@@ -15,10 +15,15 @@
 
 <script setup>
 import { useFetch } from '#app';
+const mangaList = ref([]);
 
-const { data, error, isLoading } = await useFetch('https://reader-api.tr25.es/manga'); // Fetch manga list from API
+const { data, error, isLoading } = await useFetch('/api/manga'); // Fetch manga list from API
 
-const mangaList = data.value || []; // Initialize manga list as empty array if data is not available
+if (data.value.errors) { // If there are errors, set error message
+    error.value = data.value.errors[0];
+} else {
+    mangaList.value = data.value.data;
+}
 </script>
 
 <style scoped>

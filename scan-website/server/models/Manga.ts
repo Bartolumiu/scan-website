@@ -1,15 +1,16 @@
 // server/models/Manga.ts
 import { Schema, model } from 'mongoose';
+import uuid4 from 'uuid4';
 import TagSchema from './Tag';
 
 const locales = ['en', 'sq', 'ar', 'az', 'bn', 'bg', 'my', 'ca', 'zh', 'zh-hk', 'hr', 'cs', 'da', 'nl', 'eo', 'et', 'tl', 'fi', 'fr', 'ka', 'de', 'el', 'he', 'hi', 'hu', 'id', 'it', 'ja', 'kk', 'ko', 'la', 'lt', 'ms', 'mn', 'ne', 'no', 'fa', 'pl', 'pt', 'pt-br', 'ro', 'ru', 'sr', 'sk', 'sl', 'es', 'es-la', 'sv', 'ta', 'te', 'th', 'tr', 'uk', 'vi', 'other'];
 
 const MangaSchema = new Schema({
-    _id: Schema.Types.ObjectId, // Manga ID
+    _id: { type: String, default: uuid4 }, // Manga ID
     type: { type: String, default: 'manga' },
     attributes: {
         title: { type: String, required: true },
-        altTitles: { type: Map, of: String, default: {} },
+        altTitles: { type: [Object], default: {} },
         description: { type: Map, of: String, default: {} },
         isLocked: { type: Boolean, default: false },
         links: { type: Map, of: String, default: {} },
@@ -27,7 +28,7 @@ const MangaSchema = new Schema({
         updatedAt: { type: Date, default: Date.now },
         availableTranslatedLanguages: { type: [String], default: [] },
         latestUploadedChapter: { type: String },
-        version: { type: Number, default: 1 },
+        version: { type: Number, required: true, default: 1 }
     },
     relationships: [{
         id: { type: Schema.Types.ObjectId, required: true },

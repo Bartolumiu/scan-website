@@ -1,36 +1,34 @@
 <template>
-    <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="error" class="error">
+        <img src="/img/ohno.webp" alt="Oh no!" />
+        <h1>{{ error.title }}</h1>
+        <p>{{ error.detail }}</p>
+    </div>
     <div v-else-if="isLoading" class="loading">Loading...</div>
     <div v-else class="manga-details">
-        <p>{{ data }}</p>
-        <h1>{{ data.attributes.title.en }}</h1>
-        <h2>{{ data.attributes.altTitles[0]['ja'] }}</h2>
+        <p>{{ manga }}</p>
+        <h1>{{ manga.attributes.title.en }}</h1>
+        <h2>{{ manga.attributes.altTitles[0]['ja'] }}</h2>
 
-        <MangaCard />
+        <MangaCard :id="$route.params.id"/>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from '#app';
-import axios from 'axios';
+import { ref } from 'vue';
+const manga = ref(null);
 
-const route = useRoute();
-const data = ref(null);
-const isLoading = ref(true);
-const error = ref(null);
+import { useRoute, useFetch } from '#app';
+import MangaCard from '~/components/MangaCard.vue';
+const route = useRoute(); // Get current route
 
-onMounted(async () => {
-    try {
-        const res = await axios.get(`http://localhost:5001/api/manga/${route.params.id}`); // Fetch manga details from API
-        data.value = res.data.data;
-    } catch (e) {
-        error.value = e.message;
-    } finally {
-        isLoading.value = false;
-        console.log('Component mounted');
-    }
-}); 
+const { data, error, isLoading } = await useFetch(`/api/manga/${route.params.id}`); // Fetch manga details from API
+
+if (data.value.errors) { // If there are errors, set error message 
+    error.value = data.value.errors[0];
+} else {
+    manga.value = data.value.data;
+}
 </script>
 
 <style scoped>
