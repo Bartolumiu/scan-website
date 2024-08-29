@@ -1,19 +1,22 @@
 <template>
-    <div>
-        <Header />
-        <div class="main-content">
-            <slot />
+    <div class="layout">
+        <Sidebar />
+        <div class="content">
+            <NuxtPage />
         </div>
     </div>
 </template>
 
-<script setup>
-import Header from '~/components/Header.vue'
-</script>
+<style scoped>
+.layout {
+    display: flex;
+}
 
-<style>
-.main-content {
+.content {
+    margin-left: 250px; /* This should match the sidebar width (at least in theory) */
     padding: 20px;
-    background-color: #f9f9f9;
+    flex-grow: 1;
+    background-color: #121212;
+    color: #e0e0e0;
 }
 </style>

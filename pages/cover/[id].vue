@@ -1,8 +1,18 @@
 <template>
-    <div v-if="error" class="error">{{ error.message }}</div>
-    <div v-else-if="isLoading" class="loading">Loading...</div>
+    <div v-if="error" class="error">
+        <img src="/img/ohno.webp" alt="Oh no!" />
+        <h1>{{ error.title }}</h1>
+        <p>{{ error.detail }}</p>
+    </div>
+    <div v-else-if="isLoading" class="loading">
+        <USkeleton>
+            <USkeleton width="100%" height="24px" />
+            <USkeleton width="100%" height="16px" />
+            <USkeleton width="100%" height="200px" />
+        </USkeleton>
+    </div>
     <div v-else class="cover-image">
-        <img :src="cover.coverURL" alt="Manga Cover" class="manga-cover" />
+        <img :src="cover.attributes.fileData" alt="Manga Cover" class="manga-cover" />
     </div>
 </template>
 
@@ -10,12 +20,16 @@
 import { useFetch, useRoute } from '#app';
 
 const route = useRoute();
+const cover = ref({});
+const error = ref(null);
+const isLoading = ref(true);
 
-
-// Fetch manga details from API
-const { data, error, isLoading } = await useFetch(`http://localhost:5001/api/cover/${route.params.id}`);
-
-const cover = data.attributes || {}; // Initialize cover as empty object if data is not available
+const { data } = await useFetch(`/api/cover/${route.params.id}`);
+if (data.value.errors) {
+    error.value = data.value.errors[0];
+} else {
+    cover.value = data.value.data;
+}
 </script>
 
 <style scoped>
@@ -36,5 +50,14 @@ const cover = data.attributes || {}; // Initialize cover as empty object if data
 
 .loading {
     font-size: 18px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 16px;
 }
 </style>

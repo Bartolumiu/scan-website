@@ -1,65 +1,145 @@
 <template>
-    <div class="manga-list">
-        <div v-if="error" class="error">{{ error.message }}</div>
-        <div v-else-if="isLoading" class="loading">Loading...</div>
-        <div v-else class="manga-grid">
-            <div v-for="manga in mangaList" :key="manga._id" class="manga-item">
-                <NuxtLink :to="`/title/${manga._id}`">
-                    <img :src="manga.coverURL" alt="Manga Cover" class="manga-cover" />
-                </NuxtLink>
-                <h3 class="manga-title">{{ manga.attributes.title }}</h3>
+    <div class="homepage">
+        <section class="featured">
+            <h2>Featured Titles</h2>
+            <div class="featured-grid">
+                <div class="manga-card" v-for="title in titleList" :key="title._id">
+                    <img :src="coverList[title._id].data.attributes.fileData || 'https://placehold.co/1500x2133'" alt="Manga Cover" class="manga-cover">
+                    <h3>{{ title.attributes.title }}</h3>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section class="recent-updates">
+            <h2>Recent Updates</h2>
+            <ul class="updates-list">
+                <li v-for="i in 10" :key="i">
+                    <div class="update-item">
+                        <img src="https://placehold.co/1500x2133" alt="Manga Cover" class="update-cover" />
+                        <div class="update-info">
+                            <h3 class="update-title">Title {{ i }}</h3>
+                            <p class="update-chapter">Chapter {{ i }}</p>
+                            <p class="update-time">Updated 1 hour ago</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
     </div>
 </template>
 
 <script setup>
 import { useFetch } from '#app';
-const mangaList = ref([]);
+const titleList = ref([]);
+const coverList = ref([]);
 
-const { data, error, isLoading } = await useFetch('/api/manga'); // Fetch manga list from API
+const { data, isLoading } = await useFetch('/api/manga'); // Fetch manga list from API
+
+// errors is an array of error messages
+// If there are no errors, it will be an empty array
+// If there are errors, it will contain error messages
+// Structure: { errors: [ id: 'error_id', status: status_code, title: 'error_title', detail: 'error_detail' ] }
+// Simulate an error by setting errors to an array with an error object
+data.value.errors = [{ id: 'error_id', status: 500, title: 'Internal Server Error', detail: 'An error occurred while fetching the manga list' }];
 
 if (data.value.errors) { // If there are errors, set error message
-    error.value = data.value.errors[0];
+    // Send an empty array
+    titleList.value = [];
 } else {
-    mangaList.value = data.value.data;
+    titleList.value = data.value.data;
+}
+
+for (const manga of titleList.value) { // Fetch cover for each manga
+    const { data } = await useFetch(`/api/cover/${manga.attributes.mainCover}`);
+
+    if (data.value.errors) {
+        // If there are errors, set the cover to a default image (will create a 404 image later)
+        coverList.value[manga._id] = { data: { attributes: { fileData: '/img/ohno.webp' } } };
+    } else {
+        coverList.value[manga._id] = data;
+    }
 }
 </script>
 
 <style scoped>
-.manga-list {
+.homepage {
     padding: 20px;
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-.manga-grid {
+.featured,
+.recent-updates {
+    margin-bottom: 40px;
+}
+
+.featured h2,
+.recent-updates h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.featured-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
 }
 
-.manga-item {
-    background-color: white;
-    padding: 10px;
+.manga-card {
+    background-color: #1f1f1f;
     border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.3s;
-}
-
-.manga-item:hover {
-    transform: scale(1.05);
+    text-align: center;
+    padding: 10px;
 }
 
 .manga-cover {
     width: 100%;
     height: auto;
-    display: block;
-    margin-bottom: 10px;
     border-radius: 4px;
 }
 
 .manga-title {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #e0e0e0;
+}
+
+.recent-updates .updates-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.update-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.update-cover {
+    width: 50px;
+    height: 70px;
+    margin-right: 20px;
+    border-radius: 4px;
+}
+
+.update-info {
+    flex-grow: 1;
+}
+
+.update-title {
     font-size: 16px;
-    color: #333;
-    text-align: center;
+    color: #ffffff;
+}
+
+.update-chapter,
+.update-time {
+    font-size: 14px;
+    color: #b0b0b0;
 }
 </style>

@@ -1,0 +1,55 @@
+/* assets/css/dark-mode.css */
+
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Arial', sans-serif;
+}
+
+a {
+    color: #ff6740;
+}
+
+header, footer {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #444;
+}
+
+input, textarea {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #888;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}

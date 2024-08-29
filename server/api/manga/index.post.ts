@@ -24,4 +24,4 @@ export default defineEventHandler(async (event) => {
     } catch (e) {
         return { result: 'error', errors: [{ id: 'internal_server_error', status: 500, title: 'Internal Server Error', detail: (e as Error).message }] };
     }
-})
+});

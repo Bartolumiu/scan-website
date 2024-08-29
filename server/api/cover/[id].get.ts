@@ -1,20 +1,20 @@
-// server/api/manga/[id].get.ts
-import Manga from '../../models/Manga';
+// server/api/cover/[id].get.ts
+import Cover from '../../models/Cover';
 
 export default defineEventHandler(async (event) => {
-    const titleId = getRouterParam(event, 'id');
+    const id = getRouterParam(event, 'id');
 
     try {
-        const manga = await Manga.findOne({ _id: titleId });
+        const cover = await Cover.findOne({ _id: id });
 
-        if (!manga) {
+        if (!cover) {
             return {
                 result: 'error',
                 errors: [{
                     id: 'not_found',
                     status: 404,
                     title: 'Not Found',
-                    detail: `Manga with ID ${titleId} not found`
+                    detail: `Cover with ID ${id} not found`
                 }]
             };
         }
@@ -23,13 +23,13 @@ export default defineEventHandler(async (event) => {
             result: 'ok',
             response: 'object',
             data: {
-                id: manga._id,
-                type: manga.type,
-                attributes: manga.attributes,
-                relationships: manga.relationships.map(rel => ({
+                id: cover.id,
+                type: cover.type,
+                attributes: cover.attributes,
+                /* relationships: cover.relationships.map(rel => ({
                     id: rel.id,
                     type: rel.type
-                }))
+                })) */
             }
         };
     } catch (e) {
