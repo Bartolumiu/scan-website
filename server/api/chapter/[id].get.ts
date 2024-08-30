@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const chapterId = getRouterParam(event, 'id');
 
     try {
-        const chapter = await Chapter.findOne( _id: chapterId);
+        const chapter = await Chapter.findOne({ _id: chapterId });
 
         if (!chapter) {
             return {
