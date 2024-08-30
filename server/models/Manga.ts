@@ -11,7 +11,7 @@ const MangaSchema = new Schema({
     attributes: {
         title: { type: String, required: true },
         altTitles: [{
-            locale: { type: String, enum: locales, required: true },
+            locale: { type: String, required: true },
             value: { type: String, required: true }
         }],
         description: { type: Map, of: String, default: {} },
@@ -37,6 +37,7 @@ const MangaSchema = new Schema({
         type: { type: String, enum: ['author', 'artist', 'cover_art', 'creator'], required: true },
     }]
 }, {
+    _id: false,
     versionKey: false,
     timestamps: { createdAt: 'attributes.createdAt', updatedAt: 'attributes.updatedAt' }
 });

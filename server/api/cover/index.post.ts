@@ -11,11 +11,7 @@ export default defineEventHandler(async (event) => {
         if (coverExists) {
             return { result: 'error', errors: [{ id: 'already_exists', status: 409, title: 'Conflict', detail: `Cover with ID ${body.id} already exists` }] };
         }
-
-        body._id = uuid4(); // Generate a new UUID for the cover
         body.version = 1; // Set the version to 1
-        body.attributes.createdAt = new Date(); // Set the creation date
-        body.attributes.updatedAt = new Date(); // Set the last update date
 
         const cover = new Cover(body); // Create a new cover object
         await cover.save(); // Save the cover object to the database

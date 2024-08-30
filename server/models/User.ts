@@ -8,20 +8,21 @@ const UserSchema = new Schema({
     type: { type: String, enum: ['user'], default: 'user' },
     attributes: {
         username: { type: String, required: true, unique: true },
-        roles: { type: [String], default: ['user'] },
+        roles: [{ type: String, ref: 'Role' }],
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         version: { type: Number, required: true, default: 1 }
     },
     relationships: []
 }, {
+    _id: false,
     versionKey: false,
     timestamps: { createdAt: 'attributes.createdAt', updatedAt: 'attributes.updatedAt' }
 });
 
-UserSchema.pre('save', function(next) {
-    if (this.isModified('password')) {
-        this.attributes.password = bcrypt.hash(this.attributes.password, 10);
+UserSchema.pre('save', async function(next) {
+    if (this.isModified('password') && this.attributes) { // The attributes field won't be null, but this way VSCode won't complain ヽ(｀Д´)ﾉ
+        this.attributes.password = await bcrypt.hash(this.attributes.password, 10);
     }
     next();
 });

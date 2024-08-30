@@ -13,6 +13,7 @@ const TagSchema = new Schema({
     },
     relationships: []
 }, {
+    _id: false,
     versionKey: false
 });
 

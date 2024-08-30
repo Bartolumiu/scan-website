@@ -21,6 +21,7 @@ const ChapterSchema = new Schema({
         type: { type: String, enum: ['scanlation_group', 'manga', 'user'], required: true },
     }]
 }, {
+    _id: false,
     versionKey: false,
     timestamps: { createdAt: 'attributes.createdAt', updatedAt: 'attributes.updatedAt' }
 });

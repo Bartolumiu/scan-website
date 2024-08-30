@@ -30,6 +30,7 @@ const GroupSchema = new Schema({
         type: { type: String, enum: ['leader', 'member'], required: true },
     }]
 }, {
+    _id: false,
     versionKey: false,
     timestamps: { createdAt: 'attributes.createdAt', updatedAt: 'attributes.updatedAt' }
 });

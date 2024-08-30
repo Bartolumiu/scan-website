@@ -12,6 +12,7 @@ const CoverSchema = new Schema({
         version: { type: Number, default: 1, required: true }
     }
 }, {
+    _id: false,
     versionKey: false,
     timestamps: { createdAt: 'attributes.createdAt', updatedAt: 'attributes.updatedAt' }
 });

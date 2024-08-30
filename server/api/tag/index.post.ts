@@ -11,8 +11,6 @@ export default defineEventHandler(async (event) => {
         if (tagExists) {
             return { result: 'error', errors: [{ id: 'already_exists', status: 409, title: 'Conflict', detail: `Tag with ID ${body.id} already exists` }] };
         }
-
-        body._id = uuid4(); // Generate a new UUID for the tag
         body.attributes.version = 1; // Set the version to 1
 
         const tag = new Tag(body); // Create a new tag object

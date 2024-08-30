@@ -1,6 +1,5 @@
 // server/api/manga/index.post.ts
 import Manga from '../../models/Manga';
-import uuid4 from 'uuid4';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -11,11 +10,7 @@ export default defineEventHandler(async (event) => {
         if (mangaExists) {
             return { result: 'error', errors: [{ id: 'already_exists', status: 409, title: 'Conflict', detail: `Manga with ID ${body.id} already exists` }] };
         }
-
-        body._id = uuid4(); // Generate a new UUID for the manga
-        body.version = 1; // Set the version to 1
-        body.createdAt = new Date(); // Set the creation date
-        body.updatedAt = new Date(); // Set the last update date
+        body.attributes.version = 1; // Set the version to 1
 
         const manga = new Manga(body); // Create a new manga object
         await manga.save(); // Save the manga object to the database

@@ -1,6 +1,6 @@
 {
   "name": "scan-website",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "GPL-3.0",
   "private": true,
   "type": "module",
@@ -14,12 +14,15 @@
   "dependencies": {
     "@nuxt/ui": "^2.18.4",
     "axios": "^1.7.5",
+    "bcryptjs": "^2.4.3",
     "mongoose": "^8.5.4",
     "nuxt": "^3.13.0",
     "uuid4": "^2.0.3",
     "vue": "latest"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/uuid4": "^2.0.3"
   }
 }
