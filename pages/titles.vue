@@ -8,7 +8,7 @@
         </header>
 
         <main class="container mx-auto p-4">
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols4 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <TitleCard v-for="title in filteredTitles" :key="title._id" :title="title" />
             </div>
         </main>
@@ -41,3 +41,10 @@ onMounted(async () => {
     }
 });
 </script>
+
+<style scoped>
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+</style>
