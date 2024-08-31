@@ -2,12 +2,24 @@
     <div class="homepage">
         <section class="featured">
             <h2>Featured Titles</h2>
-            <div class="featured-grid">
-                <div class="manga-card" v-for="title in titleList" :key="title._id">
-                    <img :src="coverList[title._id].data.attributes.fileData || 'https://placehold.co/1500x2133'" alt="Manga Cover" class="manga-cover">
-                    <h3>{{ title.attributes.title }}</h3>
+            <UCarousel ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
+                <!-- Featured Titles Slide -->
+                <div class="featured-slide" :style="{ backgroundImage: `url(${getCoverUrl(item)})` }">
+                    <img :src="getCoverUrl(item)" alt="Manga Cover" class="manga-cover" />
+                    <div class="manga-details">
+                        <h3 class="manga-title">{{ item.attributes.title }}</h3>
+                        <p class="manga-description">{{ item.attributes.description.en }}</p>
+                        <p class="manga-author">
+                            Author: {{ item.attributes.author || 'Unknown' }}
+                        </p>
+                        <div class="manga-tags">
+                            <span v-for="(tag, index) in item.attributes.tags" :key="index" class="tag">
+                                {{ tag.attributes.name.en }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </UCarousel>
         </section>
 
         <section class="recent-updates">
@@ -17,8 +29,8 @@
                     <div class="update-item">
                         <img src="https://placehold.co/1500x2133" alt="Manga Cover" class="update-cover" />
                         <div class="update-info">
-                            <h3 class="update-title">Title {{ i }}</h3>
-                            <p class="update-chapter">Chapter {{ i }}</p>
+                            <h3 class="update-title">Example Title {{ i }}</h3>
+                            <p class="update-chapter">Example Chapter {{ i }}</p>
                             <p class="update-time">Updated 1 hour ago</p>
                         </div>
                     </div>
@@ -29,50 +41,53 @@
 </template>
 
 <script setup>
-import { useFetch } from '#app';
-const titleList = ref([]);
-const coverList = ref([]);
+import { ref, onMounted } from 'vue';
 
-const { data, isLoading } = await useFetch('/api/manga'); // Fetch manga list from API
+const titles = ref([]);
+const covers = ref([]);
 
-// errors is an array of error messages
-// If there are no errors, it will be an empty array
-// If there are errors, it will contain error messages
-// Structure: { errors: [ id: 'error_id', status: status_code, title: 'error_title', detail: 'error_detail' ] }
-// Simulate an error by setting errors to an array with an error object
-data.value.errors = [{ id: 'error_id', status: 500, title: 'Internal Server Error', detail: 'An error occurred while fetching the manga list' }];
+const carouselRef = ref();
 
-if (data.value.errors) { // If there are errors, set error message
-    // Send an empty array
-    titleList.value = [];
-} else {
-    titleList.value = data.value.data;
-}
+onMounted(async () => {
+    try {
+        const titlesResponse = await fetch('/api/manga');
+        const titlesData = await titlesResponse.json();
+        titles.value = titlesData.data;
 
-for (const manga of titleList.value) { // Fetch cover for each manga
-    const { data } = await useFetch(`/api/cover/${manga.attributes.mainCover}`);
-
-    if (data.value.errors) {
-        // If there are errors, set the cover to a default image (will create a 404 image later)
-        coverList.value[manga._id] = { data: { attributes: { fileData: '/img/ohno.webp' } } };
-    } else {
-        coverList.value[manga._id] = data;
+        for (const title of titlesData.data) {
+            const coverResponse = await fetch(`/api/cover/${title.attributes.mainCover}`);
+            const coverData = await coverResponse.json();
+            covers.value[title._id] = coverData.data;
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
     }
-}
+
+    setInterval(() => {
+        if (!carouselRef.value) return;
+
+        if (carouselRef.value.page === carouselRef.value.pages) {
+            return carouselRef.value.select(0);
+        }
+
+        carouselRef.value.next();
+    }, 3000);
+});
+
+const getCoverUrl = (item) => {
+    return covers.value[item._id].attributes.fileData || 'https://placehold.co/1500x2133';
+};
 </script>
 
 <style scoped>
+/* Homepage */
 .homepage {
     padding: 20px;
     background-color: #121212;
     color: #e0e0e0;
 }
 
-.featured,
-.recent-updates {
-    margin-bottom: 40px;
-}
-
+/* Featured Titles */
 .featured h2,
 .recent-updates h2 {
     font-size: 24px;
@@ -80,32 +95,73 @@ for (const manga of titleList.value) { // Fetch cover for each manga
     color: #ffffff;
 }
 
-.featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+.featured-carousel {
+    margin-top: 20px;
 }
 
-.manga-card {
-    background-color: #1f1f1f;
+.featured-slide {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    background-color: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
+    position: relative;
     overflow: hidden;
-    text-align: center;
-    padding: 10px;
 }
 
 .manga-cover {
-    width: 100%;
+    width: 150px;
     height: auto;
-    border-radius: 4px;
+    margin-right: 20px;
+    border-radius: 8px;
+    object-fit: cover;
+    z-index: 1;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.manga-details {
+    z-index: 2;
+    color: #ffffff;
+    max-width: 100%;
+    max-height: 200px;
 }
 
 .manga-title {
-    margin-top: 10px;
-    font-size: 18px;
-    color: #e0e0e0;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
+.manga-description {
+    font-size: 16px;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
+
+.manga-author {
+    font-size: 14px;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
+
+.manga-tags {
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+/* Recent Updates */
 .recent-updates .updates-list {
     list-style: none;
     padding: 0;

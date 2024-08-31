@@ -1,6 +1,6 @@
 <template>
     <div v-if="error" class="error">
-        <img src="/img/ohno.webp" alt="Oh no!" />
+        <img src="/assets/ohno.webp" alt="Oh no!" />
         <h1>{{ error.title }}</h1>
         <p>{{ error.detail }}</p>
     </div>

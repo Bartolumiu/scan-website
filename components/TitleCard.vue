@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <a class="font-bold title" style="grid-area: title" :href="'/title/' + title._id">
-            <img class="inline-block select-none mr-1" title="Original Language" :src="'/img/flags/'+title.attributes.originalLanguage+'.svg'" :alt="title.attributes.originalLanguage+' flag icon'" height="24" />
+            <img class="inline-block select-none mr-1" title="Original Language" :src="'/assets/flags/'+title.attributes.originalLanguage+'.svg'" :alt="title.attributes.originalLanguage+' flag icon'" height="24" width="24"/>
             <span>{{ title.attributes.title }}</span>
         </a>
         <div class="manga-card-cover" style="grid-area: cover;">

@@ -13,7 +13,7 @@
                 <input type="text" placeholder="Search..." v-model="searchQuery" @keydown.enter="search" />
             </div>
             <UDropdown :items="dropdownOptions" :ui="{ item: { disabled: 'cursor-text' } }" :popper="{ placement: 'bottom-end'}">
-                <UAvatar :src="auth.user.avatar||'/img/ohno.webp'" class="ml-5" />
+                <UAvatar :src="auth.user.avatar||'/assets/ohno.webp'" class="ml-5" />
 
                 <template #dropdown="{ item }">
                     <div class="text-left">
