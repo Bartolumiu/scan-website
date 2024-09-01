@@ -26,11 +26,14 @@ const statusColor = {
     'completed': '0, 201, 245',
     'hiatus': '218, 117, 0',
     'cancelled': '255, 64, 64',
+    '': '255, 255, 255', // Default to white if no status is provided
 };
 
 color.value = `rgb(${statusColor[props.status]})`;
 
 function capitalizeFirstLetter(string) {
+    // If the prop still hasn't loaded, return an empty string
+    if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 </script>

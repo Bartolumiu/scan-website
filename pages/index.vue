@@ -27,7 +27,7 @@
             <ul class="updates-list">
                 <li v-for="i in 10" :key="i">
                     <div class="update-item">
-                        <img src="https://placehold.co/1500x2133" alt="Manga Cover" class="update-cover" />
+                        <img src="https://placehold.co/1500x2133?text=Example\nCover" alt="Title Cover" class="update-cover" />
                         <div class="update-info">
                             <h3 class="update-title">Example Title {{ i }}</h3>
                             <p class="update-chapter">Example Chapter {{ i }}</p>
@@ -75,7 +75,8 @@ onMounted(async () => {
 });
 
 const getCoverUrl = (item) => {
-    return covers.value[item._id].attributes.fileData || 'https://placehold.co/1500x2133';
+    if (!covers.value[item._id]) return 'https://placehold.co/1500x2133?text=Cover-Not-Available'; // Fallback image if cover is not loaded yet
+    return covers.value[item._id].attributes.fileData || 'https://placehold.co/1500x2133?text=Cover-Not-Found'; // Fallback image if cover is not found
 };
 </script>
 

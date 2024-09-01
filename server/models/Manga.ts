@@ -30,6 +30,7 @@ const MangaSchema = new Schema({
         availableTranslatedLanguages: { type: [String], default: [] },
         latestUploadedChapter: { type: String, ref: 'Chapter', default: null },
         mainCover: { type: String, default: null },
+        chapterList: { type: [String], ref: 'Chapter', default: [] },
         version: { type: Number, required: true, default: 1 }
     },
     relationships: [{
