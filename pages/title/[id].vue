@@ -68,7 +68,7 @@ onMounted(async () => {
         }
 
         // This part will throw an error because the API endpoint doesn't exist (yet)
-        /* const chaptersResponse = await fetch(`/api/manga/${route.params.id}/feed`);
+        /* const chaptersResponse = await fetch(`/api/manga/${route.params.id}/chapters`);
         const chaptersData = await chaptersResponse.json();
         chapters.value = chaptersData.data; */
     } catch (err) {

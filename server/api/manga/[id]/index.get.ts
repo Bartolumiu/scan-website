@@ -1,5 +1,5 @@
-// server/api/manga/[id].get.ts
-import Manga from '../../models/Manga';
+// server/api/manga/[id]/index.get.ts
+import Manga from '../../../models/Manga';
 
 export default defineEventHandler(async (event) => {
     const titleId = getRouterParam(event, 'id');
