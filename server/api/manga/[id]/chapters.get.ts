@@ -5,9 +5,9 @@ export default defineEventHandler(async (event) => {
     const titleId = getRouterParam(event, 'id');
 
     try {
-        const chapters = await Chapter.find({ 'relationships.id': titleId});
+        const chapters = await Chapter.find({ 'relationships.id': titleId, 'relationships.type': 'manga' });
 
-        if (!chapters) {
+        if (!chapters || chapters.length === 0) {
             return {
                 result: 'error',
                 errors: [{
@@ -19,30 +19,42 @@ export default defineEventHandler(async (event) => {
             };
         }
 
+        // Group chapters by volume, default to 'none' for chapters without volume
+        const groupedChapters: Record<string, any> = {};
+
+        chapters.forEach((chapter: any) => {
+            const volumeKey = chapter.attributes.volume || 'none';
+
+            // Initialize volume key if it doesn't exist
+            if (!groupedChapters[volumeKey]) {
+                groupedChapters[volumeKey] = {
+                    volume: chapter.attributes.volume || null,
+                    chapters: {}
+                };
+            }
+
+            // Get group and user from relationships
+            const groupRel = chapter.relationships.find((rel: any) => rel.type === 'scanlation_group');
+            const userRel = chapter.relationships.find((rel: any) => rel.type === 'user');
+
+            groupedChapters[volumeKey].chapters[chapter.attributes.chapter] = {
+                chapter: chapter.attributes.chapter.toString(),
+                id: chapter._id,
+                title: chapter.attributes.title || null,
+                group: groupRel ? groupRel.id : null,
+                user: userRel ? userRel.id : null,
+            };
+        });
+
         return {
             result: 'ok',
-            response: 'object',
-            titleID: titleId,
+            response: 'collection',
             data: {
-                volumes: [ // Get all volumes from the chapters
-                    ...new Set(chapters.map(chapter => chapter?.attributes?.volume)),
-                    // Add a 'null' volume if there are chapters without a volume
-                    chapters.some(chapter => !chapter?.attributes?.volume) ? null : undefined
-                    // Add the chapters to the volumes
-                ].map(volume => ({
-                    volume,
-                    chapters: chapters.filter(chapter => chapter?.attributes?.volume === volume).map(chapter => ({
-                        id: chapter._id,
-                        type: chapter.type,
-                        attributes: chapter.attributes,
-                        relationships: chapter.relationships.map(rel => ({
-                            id: rel.id,
-                            type: rel.type
-                        }))
-                    }))
-                })),
-            },
+                id: titleId,
+                volumes: groupedChapters
+            }
         };
+        
     } catch (e) {
         return {
             result: 'error',
@@ -54,4 +66,4 @@ export default defineEventHandler(async (event) => {
             }]
         };
     }
-})
+});

@@ -1,5 +1,5 @@
 // server/api/chapter/[id].get.ts
-import Chapter from '../../models/Chapter';
+import Chapter from '../../../models/Chapter';
 
 export default defineEventHandler(async (event) => {
     const chapterId = getRouterParam(event, 'id');

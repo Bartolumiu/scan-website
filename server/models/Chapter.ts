@@ -6,8 +6,8 @@ const ChapterSchema = new Schema({
     _id: { type: String, default: uuid4 },
     type: { type: String, enum: ['chapter'], default: 'chapter' },
     attributes: {
-        volume: { type: String, default: null },
-        chapter: { type: String, required: true },
+        volume: { type: Number, default: null },
+        chapter: { type: Number, required: true },
         title: { type: String, default: null },
         translatedLanguage: { type: String, required: true },
         externalUrl: { type: String, default: null },
@@ -15,6 +15,7 @@ const ChapterSchema = new Schema({
         readableAt: { type: Date, default: Date.now },
         pages: { type: Number, default: 0 },
         version: { type: Number, default: 1 },
+        pageUrls: [{ type: String}]
     },
     relationships: [{
         id: { type: String, required: true },

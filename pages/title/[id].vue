@@ -33,13 +33,17 @@
             </div>
         </div>
 
-        <div class="chapters-section">
+        <div class="chapters-section" v-if="Object.keys(volumes).length">
             <h2>Chapters</h2>
-            <ul>
-                <li v-for="chapter in chapters" :key="chapter.id" class="chapter-item">
-                    Ch. {{ chapter.chapter }} <span v-if="chapter.title">- {{ chapter.title }}</span>
-                </li>
-            </ul>
+            <div v-for="(volume, volumeKey) in volumes" :key="volumeKey" class="volume-group">
+                <h3 v-if="volumeKey !== 'none'">Volume {{ volumeKey }}</h3>
+                <h3 v-else>No Volume</h3>
+                <ul>
+                    <li v-for="chapter in volume.chapters" :key="chapter.id" class="chapter-item">
+                        Ch. {{ chapter.chapter }} <span v-if="chapter.title">- {{ chapter.title }}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -49,7 +53,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from '#app';
 
 const title = ref({});
-const chapters = ref([]);
+const volumes = ref({});
 const coverImage = ref('');
 const isLoading = ref(true);
 const error = ref(null);
@@ -57,6 +61,7 @@ const route = useRoute();
 
 onMounted(async () => {
     try {
+        // Fetch title data
         const titleResponse = await fetch(`/api/manga/${route.params.id}`);
         const titleData = await titleResponse.json();
 
@@ -67,10 +72,16 @@ onMounted(async () => {
             coverImage.value = coverData.data.attributes.fileData;
         }
 
-        // This part will throw an error because the API endpoint doesn't exist (yet)
-        /* const chaptersResponse = await fetch(`/api/manga/${route.params.id}/chapters`);
+        // Fetch chapters data
+        const chaptersResponse = await fetch(`/api/manga/${route.params.id}/chapters`);
         const chaptersData = await chaptersResponse.json();
-        chapters.value = chaptersData.data; */
+
+        console.log('Chapters Response:', chaptersResponse);
+
+        // Group chapters by volume
+        if (chaptersData.data && chaptersData.data.volumes) {
+            volumes.value = chaptersData.data.volumes;
+        }
     } catch (err) {
         error.value = err;
     } finally {
