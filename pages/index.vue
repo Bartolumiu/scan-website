@@ -2,7 +2,8 @@
     <div class="homepage">
         <section class="featured">
             <h2>Featured Titles</h2>
-            <UCarousel ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
+            <noscript>Could not load Featured Titles: JavaScript code execution is disabled in your browser.</noscript>
+            <UCarousel v-if="titles" ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
                 <!-- Featured Titles Slide -->
                 <div class="featured-slide" :style="{ backgroundImage: `url(${getCoverUrl(item)})` }">
                     <img :src="getCoverUrl(item)" alt="Manga Cover" class="manga-cover" />
@@ -20,10 +21,26 @@
                     </div>
                 </div>
             </UCarousel>
+            <div v-else>
+                <div class="featured-slide" style="background-image: url('https://placehold.co/1500x2133?text=No+Titles\nAvailable')">
+                    <img src="https://placehold.co/1500x2133?text=No+Titles\nAvailable" alt="Manga Cover" class="manga-cover" />
+                    <div class="manga-details">
+                        <h3 class="manga-title">No Titles Available</h3>
+                        <p class="manga-description">There are no titles available at the moment.</p>
+                        <p class="manga-author">
+                            Author: Unknown
+                        </p>
+                        <div class="manga-tags">
+                            <span class="tag">No Tags</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section class="recent-updates">
             <h2>Recent Updates</h2>
+            <noscript>Could not load Recent Updates: JavaScript code execution is disabled in your browser.</noscript>
             <ul class="updates-list">
                 <li v-for="i in 10" :key="i">
                     <div class="update-item">
