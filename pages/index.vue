@@ -3,7 +3,7 @@
         <section class="featured">
             <h2>Featured Titles</h2>
             <noscript>Could not load Featured Titles: JavaScript code execution is disabled in your browser.</noscript>
-            <UCarousel v-if="titles" ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
+            <UCarousel v-if="titles.length > 0" ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
                 <!-- Featured Titles Slide -->
                 <div class="featured-slide" :style="{ backgroundImage: `url(${getCoverUrl(item)})` }">
                     <img :src="getCoverUrl(item)" alt="Manga Cover" class="manga-cover" />
@@ -22,7 +22,7 @@
                 </div>
             </UCarousel>
             <div v-else>
-                <div class="featured-slide" style="background-image: url('https://placehold.co/1500x2133?text=No+Titles\nAvailable')">
+                <div class="featured-slide" style="background-image: url('https://placehold.co/1500x2133?text=No+Titles+Available')">
                     <img src="https://placehold.co/1500x2133?text=No+Titles\nAvailable" alt="Manga Cover" class="manga-cover" />
                     <div class="manga-details">
                         <h3 class="manga-title">No Titles Available</h3>
