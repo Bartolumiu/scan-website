@@ -1,45 +1,9 @@
 <template>
     <div class="homepage">
-        <section class="featured">
-            <h2>Featured Titles</h2>
-            <noscript>Could not load Featured Titles: JavaScript code execution is disabled in your browser.</noscript>
-            <UCarousel v-if="titles.length > 0" ref="carouselRef" v-slot="{ item }" :items="titles" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden featured-carousel" indicators>
-                <!-- Featured Titles Slide -->
-                <div class="featured-slide" :style="{ backgroundImage: `url(${getCoverUrl(item)})` }">
-                    <img :src="getCoverUrl(item)" alt="Manga Cover" class="manga-cover" />
-                    <div class="manga-details">
-                        <h3 class="manga-title">{{ item.attributes.title }}</h3>
-                        <p class="manga-description">{{ item.attributes.description.en }}</p>
-                        <p class="manga-author">
-                            Author: {{ item.attributes.author || 'Unknown' }}
-                        </p>
-                        <div class="manga-tags">
-                            <span v-for="(tag, index) in item.attributes.tags" :key="index" class="tag">
-                                {{ tag.attributes.name.en }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </UCarousel>
-            <div v-else>
-                <div class="featured-slide" style="background-image: url('https://placehold.co/1500x2133?text=No+Titles+Available')">
-                    <img src="https://placehold.co/1500x2133?text=No+Titles\nAvailable" alt="Manga Cover" class="manga-cover" />
-                    <div class="manga-details">
-                        <h3 class="manga-title">No Titles Available</h3>
-                        <p class="manga-description">There are no titles available at the moment.</p>
-                        <p class="manga-author">
-                            Author: Unknown
-                        </p>
-                        <div class="manga-tags">
-                            <span class="tag">No Tags</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        <FeaturedTitles />
+        <RecentUpdates />
         <section class="recent-updates">
-            <h2>Recent Updates</h2>
+            <h2>Recent Updates (old version / placeholder)</h2>
             <noscript>Could not load Recent Updates: JavaScript code execution is disabled in your browser.</noscript>
             <ul class="updates-list">
                 <li v-for="i in 10" :key="i">
@@ -60,8 +24,34 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-const titles = ref([]);
-const covers = ref([]);
+const titles = ref([ // Default value to show while loading
+    {
+        id: 'loading',
+        type: 'manga',
+        attributes: {
+            title: 'Loading...',
+            description: { en: 'Loading...' },
+            author: 'Loading...',
+            tags: [{ attributes: { name: { en: 'Loading...' } } }],
+        },
+        relationships: [
+            {
+                id: 'loading',
+                type: 'author',
+            }
+        ]
+    }
+]);
+const covers = ref([
+    // Default value to show while loading
+    {
+        id: 'loading',
+        type: 'cover',
+        attributes: {
+            fileData: 'https://placehold.co/1500x2133?text=Loading...',
+        },
+    },
+]);
 
 const carouselRef = ref();
 
@@ -92,8 +82,8 @@ onMounted(async () => {
 });
 
 const getCoverUrl = (item) => {
-    if (!covers.value[item._id]) return 'https://placehold.co/1500x2133?text=Cover-Not-Available'; // Fallback image if cover is not loaded yet
-    return covers.value[item._id].attributes.fileData || 'https://placehold.co/1500x2133?text=Cover-Not-Found'; // Fallback image if cover is not found
+    if (!covers.value[item._id]) return 'https://placehold.co/1500x2133?text=Cover+Not+Available'; // Fallback image if cover is not loaded yet
+    return covers.value[item._id].attributes.fileData || 'https://placehold.co/1500x2133?text=Cover+Not+Found'; // Fallback image if cover is not found
 };
 </script>
 
@@ -129,6 +119,7 @@ const getCoverUrl = (item) => {
     border-radius: 8px;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .manga-cover {
@@ -158,6 +149,11 @@ const getCoverUrl = (item) => {
     font-size: 16px;
     color: #b0b0b0;
     margin-bottom: 10px;
+
+    /* Remove line height in smaller screens */
+    @media (max-width: 768px) {
+        line-height: 1.5;
+    }
 }
 
 .manga-author {
@@ -177,6 +173,36 @@ const getCoverUrl = (item) => {
     border-radius: 20px;
     font-size: 12px;
     margin-right: 5px;
+    white-space: nowrap;
+    
+}
+
+@media (max-width: 1150px) {
+    .manga-details {
+        max-height: none;
+    }
+
+    .manga-title {
+        font-size: 14px;
+    }
+
+    .manga-description {
+        font-size: 10px;
+    }
+
+    .manga-author {
+        font-size: 8px;
+    }
+
+    .manga-tags {
+        .tag {
+            font-size: 8px;
+            margin-bottom: 2px;
+        }
+
+        display: flex;
+        flex-wrap: wrap;
+    }
 }
 
 /* Recent Updates */

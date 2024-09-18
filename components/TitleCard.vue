@@ -58,24 +58,44 @@ const descParagraphs = ref([]);
 
 onMounted(async () => {
     // Cover Image
-    if (props.title.attributes.mainCover) {
-        try {
-            const response = await fetch(`/api/cover/${props.title.attributes.mainCover}`);
-            if (!response.ok) {
-                throw new Error('HTTP Error:', response.status);
-            }
-            const data = await response.json();
+    await getCover();
 
-            coverImageUrl.value = data.data.attributes.fileData || 'https://placehold.co/1500x2133?text=No+Cover+Found';
-        } catch (error) {
-            console.error('Error fetching cover image:', error);
-            coverImageUrl.value = 'https://placehold.co/1500x2133?text=Error+Fetching+Cover';
-        }
-    } else {
-        coverImageUrl.value = 'https://placehold.co/1500x2133?text=No+Cover+Found';
-    }
+    // Content Rating
+    await getRating();
 
     // Tags
+    await getTags();
+
+    // Stats
+    await getStats();
+
+    // Description
+    await getDescription();
+
+    // Add a listener to the "MORE" button in the tags row to toggle the overflow-y style and set the max-height to unset
+    const tagsRow = document.querySelector('.tags-row');
+    tagsRow.addEventListener('click', () => {
+        tagsRow.classList.toggle('overflow-y-hidden');
+        tagsRow.style.maxHeight = tagsRow.style.maxHeight === 'calc(1em + 0rem)' ? 'unset' : 'calc(1em + 0rem)';
+    });
+});
+
+async function getCover() {
+    try {
+        const response = await fetch(`/api/cover/${props.title.attributes.mainCover}`);
+        if (!response.ok) {
+            throw new Error('HTTP Error:', response.status);
+        }
+        const data = await response.json();
+
+        coverImageUrl.value = data.data.attributes.fileData || 'https://placehold.co/1500x2133?text=No+Cover+Found';
+    } catch (error) {
+        console.error('Error fetching cover image:', error);
+        coverImageUrl.value = 'https://placehold.co/1500x2133?text=Error+Fetching+Cover';
+    }
+};
+
+async function getRating() {
     switch (props.title.attributes.contentRating) {
         case 'suggestive':
             orderedTags.value.push({ id: 'rating', color: 'rgb(218, 117, 0)', label: props.title.attributes.contentRating });
@@ -89,7 +109,9 @@ onMounted(async () => {
         default:
             break; // Do nothing (no need to add a tag for safe content)
     }
+};
 
+async function getTags() {
     const tagTypes = {
         content: [],
         genre: [],
@@ -98,8 +120,6 @@ onMounted(async () => {
     };
 
     if (props.title.attributes.tags) {
-        // Add to the orderedTags array in the following order: Content Warnings, Genre, Themes, Demographic
-        // This is to ensure that the tags are displayed in the correct order
         for (const tag of props.title.attributes.tags) {
             switch (tag.attributes.group) {
                 case 'content':
@@ -116,34 +136,37 @@ onMounted(async () => {
                     break;
                 default:
                     break;
-            }
-        }
-    }
+            };
+        };
 
-    orderedTags.value.push(...tagTypes.content, ...tagTypes.genre, ...tagTypes.theme, ...tagTypes.demographic); // Add all tags to the orderedTags array
+        orderedTags.value.push(...tagTypes.content, ...tagTypes.genre, ...tagTypes.theme, ...tagTypes.demographic);
+    };
+};
 
-    // Stats
+async function getStats() {
     const stats = await (await fetch(`/api/stats/manga/${props.title._id}`)).json();
 
-    titleStats.value = {
-        rating: stats.statistics.rating.bayesian,
-        follows: stats.statistics.follows,
-        views: stats.statistics.views,
-        comments: stats.statistics.comments
-    }
+    if (stats.result !== 'ok') {
+        titleStats.value = { rating: 0, follows: 0, views: 0, comments: { total: 0 } };
+    } else {
+        titleStats.value = {
+            rating: stats.statistics.rating.bayesian,
+            follows: stats.statistics.follows,
+            views: stats.statistics.views,
+            comments: stats.statistics.comments
+        };
+    };
+};
 
-    // Description
+async function getDescription() {
     const description = props.title.attributes.description.en;
-    // Divide the description into paragraphs
-    descParagraphs.value = description.split('\n').map((paragraph) => paragraph.trim()).filter((paragraph) => paragraph.length > 0);
 
-    // Add a listener to the "MORE" button in the tags row to toggle the overflow-y style and set the max-height to unset
-    const tagsRow = document.querySelector('.tags-row');
-    tagsRow.addEventListener('click', () => {
-        tagsRow.classList.toggle('overflow-y-hidden');
-        tagsRow.style.maxHeight = tagsRow.style.maxHeight === 'calc(1em + 0rem)' ? 'unset' : 'calc(1em + 0rem)';
-    });
-});
+    if (description) {
+        descParagraphs.value = description.split('\n').map((paragraph) => paragraph.trim()).filter((paragraph) => paragraph.length > 0);
+    } else {
+        descParagraphs.value = ['No description available.'];
+    };
+};
 </script>
 
 <style scoped>
