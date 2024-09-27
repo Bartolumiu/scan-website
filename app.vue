@@ -1,13 +1,13 @@
 <template>
   <div>
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage class="nuxt-page" />
     </NuxtLayout>
   </div>
 </template>
 
 <style scoped>
-NuxtPage {
+.nuxt-page {
   display: flex;
   justify-content: center;
   align-items: center;

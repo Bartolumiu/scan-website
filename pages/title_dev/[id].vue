@@ -51,8 +51,8 @@
                 <p><strong>Genres:</strong> {{ title.genres ? title.genres.join(', ') : 'No genres' }}</p>
                 <p><strong>Themes:</strong> {{ title.themes ? title.themes.join(', ') : 'No themes' }}</p>
                 <p><strong>Demographics:</strong> {{ title.demographics ? title.demographics.join(', ') : 'No demographics' }}</p>
-                <p><strong>Read or Buy:</strong> <a :href="title.readOrBuyLink || '#'">Link</a></p>
-                <p><strong>Track:</strong> <a :href="title.trackLink || '#'">Link</a></p>
+                <p><strong>Read or Buy:</strong> %PLACEHOLDER%</p>
+                <p><strong>Track:</strong> %PLACEHOLDER%</p>
                 <p><strong>Alternative Titles:</strong> {{ title.alternativeTitles ? title.alternativeTitles.join(', ') : 'No alternative titles' }}</p>
             </div>
         </div>
