@@ -25,3 +25,6 @@ logs
 
 # VSCode
 .vscode
+
+# SonarCloud analysis
+.scannerwork
