@@ -1,6 +1,5 @@
 // server/api/tag/index.post.ts
 import Tag from '../../models/Tag';
-import uuid4 from 'uuid4';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);

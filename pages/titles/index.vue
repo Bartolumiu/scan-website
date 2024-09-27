@@ -8,7 +8,7 @@
         </header>
 
         <main class="container mx-auto p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <TitleCard v-for="title in filteredTitles" :key="title._id" :title="title" />
             </div>
         </main>

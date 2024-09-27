@@ -1,30 +1,64 @@
 <template>
-    <div class="sidebar">
+    <div :class="['sidebar', { collapsed: isCollapsed }]">
         <div class="header">
             <img src="/logo.svg" alt="Logo" class="logo" />
         </div>
         <nav class="nav">
             <ul>
-                <li><NuxtLink to="/">Home</NuxtLink></li>
-                <li><NuxtLink to="/titles">Titles</NuxtLink></li>
-                <li><NuxtLink to="/follows">Follows</NuxtLink></li>
-                <li><NuxtLink to="/updates">Updates</NuxtLink></li>
-                <li><NuxtLink to="/community">Community</NuxtLink></li>
-                <li><NuxtLink to="/forums">Forums</NuxtLink></li>
-                <li><NuxtLink to="/groups">Groups</NuxtLink></li>
+                <li>
+                    <NuxtLink to="/">
+                        <UIcon name="i-heroicons-home-solid" class="icon" />
+                        <span v-if="!isCollapsed">Home</span>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/titles">
+                        <UIcon name="i-heroicons-book-open-solid" class="icon" />
+                        <span v-if="!isCollapsed">Titles</span>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/follows">
+                        <UIcon name="i-heroicons-star-solid" class="icon" />
+                        <span v-if="!isCollapsed">Follows</span>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/updates">
+                        <UIcon name="i-heroicons-bell-solid" class="icon" />
+                        <span v-if="!isCollapsed">Updates</span>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/settings">
+                        <UIcon name="i-heroicons-cog-solid" class="icon" />
+                        <span v-if="!isCollapsed">Settings</span>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/help">
+                        <UIcon name="i-heroicons-question-mark-circle-solid" class="icon" />
+                        <span v-if="!isCollapsed">Help</span>
+                    </NuxtLink>
+                </li>
             </ul>
         </nav>
         <div class="footer">
-            <ul>
-                <li><NuxtLink to="/settings">Settings</NuxtLink></li>
-                <li><NuxtLink to="/help">Help</NuxtLink></li>
-            </ul>
+            <!-- Prevent layout break -->
         </div>
+        <button @click="$emit('toggle')" class="toggle-button">
+            ☰
+        </button>
     </div>
 </template>
 
 <script setup>
-// Nothing to see here (for now)
+const props = defineProps({
+    isCollapsed: {
+        type: Boolean,
+        default: false,
+    }
+});
 </script>
 
 <style scoped>
@@ -40,6 +74,12 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 60px;
 }
 
 .header {
@@ -66,39 +106,69 @@
     color: #e0e0e0;
     text-decoration: none;
     font-size: 18px;
-    display: block;
+    display: flex;
+    align-items: center;
     padding: 10px;
     border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav li a:hover {
     background-color: #333;
 }
 
+.nav li .icon {
+    margin-right: 10px;
+    font-size: 20px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.sidebar.collapsed .nav li .icon {
+    margin-right: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar.collapsed .nav li a {
+    justify-content: center;
+}
+
 .footer {
     margin-top: auto;
 }
 
-.footer ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer li {
-    margin-bottom: 15px;
-}
-
-.footer li a {
+.toggle-button {
+    background: none;
+    border: none;
     color: #e0e0e0;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    transition: left 0.3s ease;
 }
 
-.footer li a:hover {
-    background-color: #333;
+.sidebar.collapsed .toggle-button {
+    left: 0px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .collapsed .nav li a {
+        font-size: 0;
+        padding: 0;
+    }
+
+    .collapsed .logo {
+        display: none;
+    }
 }
 </style>

@@ -6,7 +6,7 @@ const CoverSchema = new Schema({
     _id: { type: String, default: uuid4 },
     type: { type: String, enum: ['cover'], default: 'cover' },
     attributes: {
-        fileName: { type: String, required: true },
+        fileName: { type: String, default: uuid4, required: true },
         fileMime: { type: String, required: true },
         fileData: { type: String, required: true },
         version: { type: Number, default: 1, required: true }

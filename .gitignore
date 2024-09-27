@@ -22,3 +22,9 @@ logs
 .env
 .env.*
 !.env.example
+
+# VSCode
+.vscode
+
+# SonarCloud analysis
+.scannerwork
