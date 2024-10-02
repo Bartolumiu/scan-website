@@ -27,6 +27,6 @@ export default defineEventHandler(async (event) => {
 
         return { result: 'ok', response: 'collection', data: tags, limit, offset, total: tags.length };
     } catch (error) {
-        return { result: 'error', errors: [{ id: 'internal_server_error', status: 500, title: 'Internal Server Error', detail: error.message }] };
+        return { result: 'error', errors: [{ id: 'internal_server_error', status: 500, title: 'Internal Server Error', detail: (error as Error).message }] };
     }
 })

@@ -43,8 +43,6 @@ onMounted(async () => {
         // Set the titles array with the default value to show while loading
         titles.value = [loadingItem];
 
-        console.log(titles.value);
-
         const titlesResponse = await fetch('/api/manga');
         const titlesData = await titlesResponse.json();
         titles.value = titlesData.data;
@@ -63,10 +61,6 @@ onMounted(async () => {
 
 const getCoverUrl = (item) => {
     if (!item) return 'https://placehold.co/1500x2133?text=Cover+Not+Found';
-
-    console.log('Item:', item);
-    console.log('Covers:', covers.value);
-
     return covers.value[item._id]?.attributes.fileData || 'https://placehold.co/1500x2133?text=Cover+Not+Found';
 }
 </script>

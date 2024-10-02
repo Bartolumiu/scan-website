@@ -1,7 +1,7 @@
 <template>
     <div :class="['sidebar', { collapsed: isCollapsed }]">
         <div class="header">
-            <img src="/logo.svg" alt="Logo" class="logo" />
+            Test
         </div>
         <nav class="nav">
             <ul>
@@ -45,10 +45,11 @@
         </nav>
         <div class="footer">
             <!-- Prevent layout break -->
+            <button @click="$emit('toggle')" class="toggle-button">
+                ☰
+            </button>
         </div>
-        <button @click="$emit('toggle')" class="toggle-button">
-            ☰
-        </button>
+
     </div>
 </template>
 
