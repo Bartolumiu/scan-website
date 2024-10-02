@@ -9,14 +9,12 @@
                     <input type="text" id="username" name="username" />
                 </div>
                 <div class="settings-item">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" :value="emailValue" disabled />
-                    <button v-on:click="toggleEmail" id="toggleEmail">
-                        <span>{{ emailVisible ? 'Hide' : 'Show' }}</span>
-                    </button>
+                    <label for="email">Email: </label>
+                    <input type="text" id="email" name="email" :value="emailValue" disabled>
+                    <button @click="toggleEmail">{{ emailVisible ? 'Hide' : 'Show' }} Email</button>
                 </div>
                 <div class="settings-item">
-                    <label for="password">Change Password</label>
+                    <label for="password">Change Password: </label>
                     <NuxtLink to="/settings/changePassword"><button>Change Password</button></NuxtLink>
                 </div>
             </div>
@@ -52,15 +50,18 @@ const user = {
 import { ref } from 'vue';
 
 const emailVisible = ref(false);
-const emailValue = ref(user.email.replace(/.*(?=@)/, '*'.repeat(user.email.indexOf('@'))));
+const emailValue = ref(user.email.split('@').map((part, index) => index === 1 ? part : '*'.repeat(part.length)).join('@'));
 
 const toggleEmail = () => {
     emailVisible.value = !emailVisible.value;
-    if (emailVisible.value) {
-        emailValue.value = user.email;
-    } else {
+    if (emailVisible.value === false) {
         // Replace everything before the @ symbol with asterisks
-        emailValue.value = user.email.replace(/.*(?=@)/, '*'.repeat(user.email.indexOf('@')));
+        emailVisible.value = false;
+        emailValue.value = user.email.split('@').map((part, index) => index === 1 ? part : '*'.repeat(part.length)).join('@');
+    } else {
+        // Show the full email
+        emailVisible.value = true;
+        emailValue.value = user.email;
     }
 };
 </script>
